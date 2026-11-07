@@ -21,6 +21,12 @@ namespace DreamApi.Controllers
             return Ok(new { marcador = marcadorService.Obter(idUsuario, idDocumento) });
         }
 
+        [HttpGet("Lista")]
+        public List<TituloSeguidoDto> Lista([FromQuery] int idUsuario)
+        {
+            return marcadorService.ListarDoUsuario(idUsuario);
+        }
+
         [HttpPut]
         public IActionResult Definir([FromBody] MarcadorPublicacao dados)
         {

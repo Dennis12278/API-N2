@@ -22,6 +22,28 @@ namespace DreamApi.Services
                 .FirstOrDefault() ?? "";
         }
 
+        // todas as publicações marcadas pelo usuário, com o marcador de cada uma
+        public List<TituloSeguidoDto> ListarDoUsuario(int idUsuario)
+        {
+            return context.MarcadoresPublicacao
+                .AsNoTracking()
+                .Where(m => m.IdUsuario == idUsuario)
+                .Join(
+                    context.Documentos.AsNoTracking(),
+                    m => m.IdDocumento,
+                    d => d.Id,
+                    (m, d) => new TituloSeguidoDto
+                    {
+                        Id = d.Id,
+                        Titulo = d.Titulo,
+                        Capa = d.Capa,
+                        Marcador = m.Marcador,
+                        DataPublicacao = d.DataPublicacao
+                    })
+                .OrderByDescending(t => t.DataPublicacao)
+                .ToList();
+        }
+
         public void Definir(int idUsuario, int idDocumento, string marcador)
         {
             MarcadorPublicacao? existente = context.MarcadoresPublicacao
