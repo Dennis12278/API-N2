@@ -35,6 +35,7 @@ builder.Services.AddScoped<ColecaoDocumentoService>();
 builder.Services.AddScoped<ColecaoPublicaService>();
 builder.Services.AddScoped<MarcadorPublicacaoService>();
 builder.Services.AddScoped<HistoricoLeituraService>();
+builder.Services.AddScoped<PerfilService>();
 
 
 builder.Services.AddOpenApi();
