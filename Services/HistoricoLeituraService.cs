@@ -58,6 +58,33 @@ namespace DreamApi.Services
             context.SaveChanges();
         }
 
+        // grava o progresso (0 a 100); nunca diminui o que já foi lido
+        public void AtualizarProgresso(int idUsuario, int idDocumento, int progresso)
+        {
+            HistoricoLeitura? historico = context.HistoricosLeitura
+                .FirstOrDefault(h => h.IdUsuario == idUsuario && h.IdDocumento == idDocumento);
+
+            int valor = Math.Clamp(progresso, 0, 100);
+
+            if (historico == null)
+            {
+                context.HistoricosLeitura.Add(new HistoricoLeitura
+                {
+                    IdUsuario = idUsuario,
+                    IdDocumento = idDocumento,
+                    Progresso = valor,
+                    DataUltimaLeitura = DateTime.UtcNow
+                });
+            }
+            else
+            {
+                historico.Progresso = Math.Max(historico.Progresso, valor);
+                historico.DataUltimaLeitura = DateTime.UtcNow;
+            }
+
+            context.SaveChanges();
+        }
+
         public void Excluir(int id)
         {
             HistoricoLeitura? historico = context.HistoricosLeitura.Find(id);

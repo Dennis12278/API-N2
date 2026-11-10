@@ -29,6 +29,17 @@ namespace DreamApi.Controllers
             return Ok();
         }
 
+        [HttpPut("Progresso")]
+        public IActionResult AtualizarProgresso(
+            [FromQuery] int idUsuario,
+            [FromQuery] int idDocumento,
+            [FromQuery] int progresso)
+        {
+            historicoLeituraService.AtualizarProgresso(idUsuario, idDocumento, progresso);
+
+            return Ok();
+        }
+
         [HttpDelete("{id}")]
         public IActionResult Excluir(int id)
         {

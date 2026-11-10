@@ -1,18 +1,22 @@
 ﻿using DreamApi.Models;
 using DreamApi.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DreamApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [AllowAnonymous]
     public class AuthController : ControllerBase
     {
         private readonly AuthService authService;
+        private readonly TokenService tokenService;
 
-        public AuthController(AuthService authService)
+        public AuthController(AuthService authService, TokenService tokenService)
         {
             this.authService = authService;
+            this.tokenService = tokenService;
         }
 
         [HttpPost("Cadastrar")]
@@ -40,11 +44,12 @@ namespace DreamApi.Controllers
 
             Usuario usuario = authService.Cadastrar(dto);
 
-            return Ok(new UsuarioSessaoDto
+            return Ok(new
             {
-                Id = usuario.Id,
-                Nome = usuario.Nome,
-                Email = usuario.Email
+                id = usuario.Id,
+                nome = usuario.Nome,
+                email = usuario.Email,
+                token = tokenService.Gerar(usuario)
             });
         }
 
@@ -59,11 +64,12 @@ namespace DreamApi.Controllers
                 return Unauthorized("E-mail ou senha inválidos.");
             }
 
-            return Ok(new UsuarioSessaoDto
+            return Ok(new
             {
-                Id = usuario.Id,
-                Nome = usuario.Nome,
-                Email = usuario.Email
+                id = usuario.Id,
+                nome = usuario.Nome,
+                email = usuario.Email,
+                token = tokenService.Gerar(usuario)
             });
         }
     }
